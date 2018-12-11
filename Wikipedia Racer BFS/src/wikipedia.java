@@ -22,8 +22,8 @@ public class wikipedia {
 		File f = new File(fileStoragePath);
 		Path p = Paths.get(f.getAbsolutePath());
 		if (!Files.exists(p)) {
-            Files.createDirectories(p);
-        }
+            		Files.createDirectories(p);
+		}
 		
 		//Getting user input
 		Scanner reader = new Scanner (System.in);
@@ -99,8 +99,8 @@ public class wikipedia {
 	public static void getPageLinks(Node node) throws IOException{
 		File f = new File(fileStoragePath+"/"+node.pageName + ".txt");
 		
-		
-		if (f.exists()) { // Checking links from offline system
+		boolean goOffline = f.exists();
+		if (goOffline) { // Checking links from offline system
 			Scanner in = new Scanner(f);
 			ArrayList<String> links = new ArrayList<String>();
 			while (in.hasNextLine()) {
@@ -113,9 +113,13 @@ public class wikipedia {
 					found = true;
 					endPath = node.path+"->"+node.pageName+"->"+link;
 				}
-			}	
+			}
+			if (links.isEmpty()) {
+				goOffline = false;
+			}
 			in.close();
-		} else { // Getting links from online and save to offline
+		}
+		if (!goOffline) { // Getting links from online and save to offline
 			PrintWriter out = new PrintWriter(f);
 			String page = getPage(node.pageName);
 			ArrayList<String> links = new ArrayList<String>();
